@@ -1,0 +1,146 @@
+add-highlighter global/ number-lines -hlcursor -separator ' '
+set-face global LineNumbers bright-yellow,default
+set-face global LineNumberCursor bright-yellow,default+r
+
+add-highlighter global/ show-matching
+set-face global MatchingChar blue,default+r
+
+hook global KakEnd .* %{ echo -to-file ~/.kak_history -quoting kakoune reg : %reg{:} }
+hook global KakBegin .* %{ try %{ source .kak_history } }
+
+hook global InsertCompletionShow .* %{
+  try %{
+    # this command temporarily removes cursors preceded by whitespace;
+    # if there are no cursors left, it raises an error, does not
+    # continue to execute the mapping commands, and the error is eaten
+    # by the `try` command so no warning appears.
+    execute-keys -draft 'h<a-K>\h<ret>'
+    map window insert <tab> <c-n>
+    map window insert <s-tab> <c-p>
+  }
+}
+hook global InsertCompletionHide .* %{
+    unmap window insert <tab> <c-n>
+    unmap window insert <s-tab> <c-p>
+}
+
+hook global BufSetOption filetype=gas %{
+  set-option buffer comment_line '#'
+}
+
+hook global InsertChar \t %{ exec -draft -itersel h@ }
+set global tabstop 2
+set global indentwidth 2
+
+# hook global InsertChar l %{ try %{
+#   exec -draft hH <a-k>kl<ret> d
+#   exec <esc>
+# }}
+
+define-command -hidden -docstring \
+"select a word under cursor, or add cursor on next occurrence of current selection" \
+select-or-add-cursor %{
+  try %{
+    execute-keys "<a-k>\A.\z<ret>"
+    execute-keys -save-regs '' "_<a-i>w*"
+  } catch %{
+    execute-keys -save-regs '' "_*<s-n>"
+  } catch nop
+  }
+map global normal '<c-d>' ': select-or-add-cursor<ret>' -docstring "add cursor on current word, and jump to the next match"
+# map global insert '<c-d>' '<esc>: select-or-add-cursor<ret>i' -docstring "add cursor on current word, and jump to the next match"
+
+map global normal <esc> <space>
+map global normal <space> ,
+
+# Comment Line
+map global user <space> '<esc>'
+map global user f ': comment-line<ret>' -docstring "comment lines"
+map global user c '<a-|> xclip -in -selection clipboard >&- 2>&- <ret>' -docstring "copy to clipboard"
+
+# Plugins
+source "%val{config}/plugins/plug.kak/rc/plug.kak"
+plug "kak-lsp/kak-lsp" do %{
+  cargo install --locked --force --path .
+}
+
+
+
+plug "insipx/kak-crosshairs"
+cursorline
+set-face global crosshairs_line default,rgb:231F33
+
+# LSP
+# eval %sh{kak-lsp --kakoune -s $kak_session}
+lsp-enable
+set global lsp_cmd "kak-lsp -s %val{session} -vvv --log /tmp/kak-lsp.log"
+
+# invert x and a-x
+map global normal x <a-x>
+map global normal <a-x> x
+
+# invert r and R
+map global normal r R
+map global normal R r
+
+# <a-e> to go to definition
+map global normal <a-e> ': lsp-definition<ret>vv'
+# <a-w> and <a-q> for prev and next location
+map global normal <a-w> '<c-o>vv'
+map global normal <a-s-w> '<tab>vv'
+
+# tab, ctrl-tab, ctrl-w for next, prev, close buffer
+map global normal <tab> ': buffer-next<ret>'
+map global normal <s-tab> ': buffer-previous<ret>'
+map global normal <c-w> ': delete-buffer<ret>'
+
+# j is the new o
+map global normal <j> o
+map global normal <s-j> <s-o>
+map global normal <a-j> <a-o>
+
+# h is the new p
+map global normal <h> p
+map global normal <s-h> <s-p>
+map global normal <a-h> <a-p>
+
+# opkl for navigation
+map global normal o k
+map global normal l j
+map global normal k h
+map global normal p l
+map global normal <s-o> <s-k>
+map global normal <s-l> <s-j>
+map global normal <s-k> <s-h>
+map global normal <s-p> <s-l>
+# map global normal <c-k> <a-b>
+map global normal <c-k> <a-s-b>
+# map global normal <c-p> <a-w>
+map global normal <c-p> <a-s-w>
+
+# c-o and c-l to move up/down half a page
+map global normal <c-o> 'vk'
+map global normal <c-l> 'vj'
+
+# unlearn old habits
+map global insert <c-left> '<esc><a-b>i'
+map global insert <c-s-left> '<esc><a-s-b>i'
+map global insert <c-right> '<esc><a-w>a'
+map global insert <c-s-right> '<esc><a-s-w>a'
+map global insert <s-up> '<esc><s-up>'
+map global insert <s-down> '<esc><s-down>'
+
+map global normal <up> ': echo use opkl da<ret>'
+map global normal <down> ': echo use opkl da<ret>'
+map global normal <left> ': echo use opkl da<ret>'
+map global normal <right> ': echo use opkl da<ret>'
+map global normal <s-up> ': echo use opkl da<ret>'
+map global normal <s-down> ': echo use opkl da<ret>'
+map global normal <s-left> ': echo use opkl da<ret>'
+map global normal <s-right> ': echo use opkl da<ret>'
+map global insert <up> '<esc>: echo use opkl da<ret>'
+map global insert <down> '<esc>: echo use opkl da<ret>'
+map global insert <left> '<esc>: echo use opkl da<ret>'
+map global insert <right> '<esc>: echo use opkl da<ret>'
+# map global insert <esc> ': echo use opkl da'
+
