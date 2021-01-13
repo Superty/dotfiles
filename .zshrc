@@ -163,7 +163,7 @@ FZF_SHELL_DEFAULT_ARGS='-i --ansi --height 40% --layout reverse --info inline'
 fzf_history_cd() {
   clear-line
   local IFS=' '
-  dest=$(dirs -v | fzf-shell "cd " --filepath-word --tiebreak index | cut -d$'\t' -f 2 | sed "s#^~#$HOME#")
+  dest=$(fasd -Rdl | fzf-shell "cd " --filepath-word --tiebreak index | sed "s#^~#$HOME#")
   if [[ -n $dest ]]; then
     print -nP "$PROMPT"
     builtin cd $dest
@@ -207,3 +207,6 @@ export PATH="$PATH:/home/arjun/build/arcanist/bin/"
 
 # dotgit
 alias dot="git --git-dir=$HOME/.dotgit --work-tree=$HOME"
+
+# fasd
+eval "$(fasd --init posix-alias zsh-hook)"
