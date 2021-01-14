@@ -1,0 +1,4 @@
+#!/bin/sh
+FZF_COLORS="--color=dark,bg+:#231F33,gutter:-1,pointer:11,fg+:11,hl:1,hl+:1,prompt:4"
+FZF_BINDS="--bind=ctrl-o:up,ctrl-l:down"
+FZF_DEFAULT_OPTS="--cycle --ansi $FZF_COLORS $FZF_BINDS" /usr/bin/fzf-0.24.3 "$@"
