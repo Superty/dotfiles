@@ -1,0 +1,289 @@
+set $mod Mod4
+set $left k
+set $right p
+set $up o
+set $down l
+
+# Font for window titles. Will also be used by the bar unless a different font
+# is used in the bar {} block below.
+font pango:monospace 10
+
+# This font is widely installed, provides lots of unicode glyphs, right-to-left
+# text rendering and scalability on retina/hidpi displays (thanks to pango).
+#font pango:DejaVu Sans Mono 8
+
+# Before i3 v4.8, we used to recommend this one as the default:
+# font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
+# The font above is very space-efficient, that is, it looks good, sharp and
+# clear in small sizes. However, its unicode glyph coverage is limited, the old
+# X core fonts rendering does not support right-to-left and this being a bitmap
+# font, it doesn’t scale on retina/hidpi displays.
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# start a terminal
+bindsym $mod+Return exec gnome-terminal
+
+# kill focused window (previously $mod+Shift+q)
+bindsym $mod+q kill
+
+# start dmenu (a program launcher)
+# bindsym $mod+d exec dmenu_run
+# There also is the (new) i3-dmenu-desktop which only displays applications
+# shipping a .desktop file. It is a wrapper around dmenu, so you need that
+# installed.
+bindsym $mod+d exec --no-startup-id dmenu_run
+
+# change focus
+# bindsym $mod+j focus left
+# bindsym $mod+k focus down
+# bindsym $mod+o focus up
+# bindsym $mod+semicolon focus right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+
+# move focused window
+# bindsym $mod+Shift+j move left
+# bindsym $mod+Shift+k move down
+# bindsym $mod+Shift+o move up
+# bindsym $mod+Shift+semicolon move right
+
+# alternatively, you can use the cursor keys:
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# split in horizontal orientation
+bindsym $mod+h split h
+
+# split in vertical orientation
+bindsym $mod+v split v
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+# bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+# bindsym $mod+e layout toggle split
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# focus the child container
+bindsym $mod+z focus child
+
+set $ws9 "9|♪"
+# switch to workspace
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace number 10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace number 10
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+
+mode "exit: [l]ogout, [r]eboot, [s]hutdown" {
+  bindsym l exec i3-msg exit
+  bindsym r exec reboot
+  bindsym s exec poweroff
+  bindsym Escape mode "default"
+  bindsym Return mode "default"
+}
+bindsym $mod+Shift+e mode "exit: [l]ogout, [r]eboot, [s]hutdown"
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # These bindings trigger as soon as you enter the resize mode
+
+        # Pressing left will shrink the window’s width.
+        # Pressing right will grow the window’s width.
+        # Pressing up will shrink the window’s height.
+        # Pressing down will grow the window’s height.
+        bindsym $left resize shrink width 10 px or 10 ppt
+        bindsym $down resize grow height 10 px or 10 ppt
+        bindsym $up resize shrink height 10 px or 10 ppt
+        bindsym $right resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# resize modify brightness
+mode "change brightness: w/s, up/down, o/l" {
+        # same bindings, but for the arrow keys
+        bindsym $up exec brightnessctl set +5%
+        bindsym $down exec brightnessctl set 5%-
+        bindsym Up exec brightnessctl set +5%
+        bindsym Down exec brightnessctl set 5%-
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+b mode "default"
+}
+bindsym $mod+b mode "change brightness: w/s, up/down, o/l"
+
+# CUSTOM
+# move easily, within the workspace
+mode "move in workspace" {
+	bindsym a focus left
+	bindsym s focus down
+	bindsym w focus up
+	bindsym d focus right
+	bindsym Shift+a move left
+	bindsym Shift+s move down
+	bindsym Shift+w move up
+	bindsym Shift+d move right
+
+    bindsym q mode "default"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+	bindsym $mod+Shift+w mode "default"
+}
+bindsym $mod+Shift+w mode "move in workspace"
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+bar {
+    status_command i3status
+    colors {
+        background #1A1922
+        separator #C01C28
+        statusline #33C7DE
+        focused_workspace #11556C #11556C #FFFFFF
+ #       separator_symbol ":|:"
+    }
+}
+# dark blue   -- #11556C
+# blue        -- #2191B6
+# light blue  -- #88CCD9
+# brown       -- #C65825
+# colours
+# class                 border  backgr. text    indicator child_border
+client.focused          #11556C #11556C #ffffff #ff0000   #11556C
+client.urgent           #C65825 #C65825 #ffffff #ff0000   #C65825
+
+# lady (I no longer recall what this pun was about)
+# edit many years later: stormlight pun
+bindsym XF86MonBrightnessUp exec xbacklight -inc 5
+bindsym XF86MonBrightnessDown exec xbacklight -dec 5
+
+# keyboard fixes
+#exec xmodmap -e 'keycode 94 = j h'
+#exec xmodmap -e 'keysym Prior = j'
+#exec xmodmap -e 'keysym Next = l'
+
+# lock screen
+bindsym XF86Sleep exec lock && systemctl suspend
+# exec xautolock -time 15 -locker lock -killtime 10 -killer 'systemctl suspend'
+
+# Pulse Audio controls
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% # increase left sound volume
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% # decrease left sound volume
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+#alternate controls
+bindsym $mod+s exec --no-startup-id change-volume +5% -n # increase left sound volume
+bindsym $mod+x exec --no-startup-id change-volume -5% -n # increase left sound volume
+
+# Media Control
+# bindsym Control_L+Alt_L+space exec playerctl play-pause
+# bindsym Control_L+Alt_L+o exec playerctl next
+# bindsym Control_L+Alt_L+j exec playerctl previous
+
+# launch applications
+# bindsym $mod+z exec firefox
+# bindsym $mod+x exec gnome-terminal
+# bindsym $mod+c exec subl
+# bindsym $mod+v exec gnome-calculator
+
+# lock
+# bindsym $mod+o exec i3lock -i '/usr/share/backgrounds/warty-final-ubuntu-no-gorrila.png'
+
+# screenshot
+# bindsym --release Scroll_Lock exec gnome-screenshot -a
+# bindsym --release Control_L+Scroll_Lock exec gnome-screenshot -w
+# bindsym --release Shift+Scroll_Lock exec gnome-screenshot
+# bindsym --release home exec gnome-screenshot
+# bindsym --release Control_L+home exec gnome-screenshot -w
+# bindsym --release Shift+home exec gnome-screenshot -a
+
+bindsym --release Print exec --no-startup-id maim ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S)
+bindsym --release $mod+Shift+s exec --no-startup-id maim ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S)
+bindsym --release Shift+Print exec --no-startup-id maim -s ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S)
+bindsym --release $mod+s exec --no-startup-id maim -s ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png
+
+for_window [class="gnome-terminal-popup"] floating enable
+
+# misc
+default_border pixel 2
+hide_edge_borders vertical
+focus_follows_mouse no
+
+# wallpaper
+exec_always --no-startup-id feh --bg-scale '/usr/share/backgrounds/warty-final-ubuntu-no-gorrila.png'
+
+# next/prev workspace
+bindsym $mod+Tab workspace next 
+bindsym $mod+Shift+Tab workspace prev
+
+# rename workspace
+bindsym $mod+e exec --no-startup-id rename-workspace
+
+# NetworkManager applet
+exec --no-startup-id nm-applet
+exec_always --no-startup-id setxkbmap -option caps:swapescape
+
+# assign windows to workspaces
+for_window [class="Spotify"] move to workspace $ws9

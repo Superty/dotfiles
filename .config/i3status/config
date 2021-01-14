@@ -1,0 +1,76 @@
+# i3status configuration file.
+# see "man i3status" for documentation.
+
+# It is important that this file is edited as UTF-8.
+# The following line should contain a sharp s:
+# ß
+# If the above line is not correctly displayed, fix your editor first!
+
+general {
+  colors = true
+  color_good =     '#D0CFCC'
+  color_degraded = '#2191B6'
+  color_bad =      '#C65825'
+  interval = 1
+  separator = "  "
+  #seperator = ' \| '
+}
+
+order += "volume master"
+# order += "disk /new"
+# order += "disk /"
+# order += "wireless _first_"
+order += "battery all"
+order += "tztime local"
+
+wireless _first_ {
+  format_up = "W: (%quality at %essid) %ip"
+  format_down = "W: down"
+  separator_block_width = 20
+}
+
+ethernet _first_ {
+  # if you use %speed, i3status requires root privileges
+  format_up = "E: %ip (%speed)"
+  format_down = "E: down"
+  separator_block_width = 20
+}
+
+battery all {
+  format = "%status %percentage %remaining"
+  integer_battery_capacity = true
+  last_full_capacity = false
+  separator_block_width = 20
+  hide_seconds = true
+}
+
+tztime local {
+  format = "%Y-%m-%d %H:%M:%S"
+  separator_block_width = 20
+}
+
+load {
+  format = "%1min"
+  separator_block_width = 20
+}
+
+disk "/" {
+  format = "root %avail"
+	threshold_type = "gbytes_avail"
+	low_threshold = 3
+  separator_block_width = 20
+}
+disk "/new" {
+	format = "new %avail"
+	threshold_type = "gbytes_avail"
+	low_threshold = 3
+  separator_block_width = 20
+}
+
+volume master {
+	format = "♪: %volume"
+	format_muted = "♪: muted (%volume)"
+	device = "pulse"
+  separator_block_width = 20
+}
+
