@@ -28,6 +28,13 @@ hook global BufSetOption filetype=gas %{
   set-option buffer comment_line '#'
 }
 
+# hook global BufCreate '\*stdin(?:-\d+)?\*' %{
+#   # gnome-terminal-popup fzf
+#   hook global BufCloseFifo .* %{
+#     gnome-terminal-popup fzf
+#     exec "gg"
+#   }
+# }
 hook global InsertChar \t %{ exec -draft -itersel h@ }
 set global tabstop 2
 set global indentwidth 2
@@ -46,34 +53,74 @@ select-or-add-cursor %{
   } catch %{
     execute-keys -save-regs '' "_*<s-n>"
   } catch nop
-  }
+}
 map global normal '<c-d>' ': select-or-add-cursor<ret>' -docstring "add cursor on current word, and jump to the next match"
 # map global insert '<c-d>' '<esc>: select-or-add-cursor<ret>i' -docstring "add cursor on current word, and jump to the next match"
 
 map global normal <esc> <space>
 map global normal <space> ,
 
-# Comment Line
 map global user <space> '<esc>'
+# Comment Line
 map global user f ': comment-line<ret>' -docstring "comment lines"
 map global user c '<a-|> xclip -in -selection clipboard >&- 2>&- <ret>' -docstring "copy to clipboard"
+map global user o ': fzf-files-git<ret>' -docstring 'open file in git repo or pwd with fzf'
 
 # Plugins
 source "%val{config}/plugins/plug.kak/rc/plug.kak"
+
+plug "robertmeta/plug.kak" noload
 plug "kak-lsp/kak-lsp" do %{
   cargo install --locked --force --path .
 }
+# eval %sh{kak-lsp --kakoune -s $kak_session}
+lsp-enable
+# set global lsp_cmd "kak-lsp -s %val{session} -vvv --log /tmp/kak-lsp.log"
+source "%val{config}/gnome-terminal.kak"
+require-module gnome-terminal
+plug alexherbo2/alacritty.kak
+require-module alacritty
+plug alexherbo2/terminal-mode.kak
+require-module terminal-mode
 
+alias global terminal gnome-terminal
+alias global popup gnome-terminal-popup
 
+# prelude is a dependency for connect
+plug alexherbo2/prelude.kak
+plug alexherbo2/connect.kak %{
+  require-module connect
+  # require-module connect-lf
+  require-module connect-fzf
+
+  # hook global RuntimeError "\d+:\d+: '\w+' (.*): is a directory" %{
+  #   evaluate-commands %sh{
+  #     directory=$kak_hook_param_capture_1
+  #     echo lf $directory
+  #   }
+  # }
+
+  # map global user h ": connect-terminal <ret>" -docstring "Spawn a connected terminal"
+}
 
 plug "insipx/kak-crosshairs"
 cursorline
 set-face global crosshairs_line default,rgb:231F33
 
-# LSP
-# eval %sh{kak-lsp --kakoune -s $kak_session}
-lsp-enable
-set global lsp_cmd "kak-lsp -s %val{session} -vvv --log /tmp/kak-lsp.log"
+# source "%val{config}/plugins/kakoune-gdb/gdb.kak"
+# source "%val{config}/plugins/kakoune-gdb/gdb-output-handler.perl"
+plug "occivink/kakoune-gdb" subset %{
+  # gdb-output-handler.perl
+  gdb.kak
+}
+
+plug "https://gitlab.com/Screwtapello/kakoune-state-save"
+
+# plug "alexherbo2/view-mode.kak" %{
+#   require-module view-mode
+# }
+
+plug "eraserhd/kak-ansi"
 
 # invert x and a-x
 map global normal x <a-x>
@@ -99,10 +146,10 @@ map global normal <j> o
 map global normal <s-j> <s-o>
 map global normal <a-j> <a-o>
 
-# h is the new p
-map global normal <h> p
-map global normal <s-h> <s-p>
-map global normal <a-h> <a-p>
+# , to paste
+map global normal , <s-p>
+# map global normal <s-h> <s-p>
+# map global normal <a-h> <a-p>
 
 # opkl for navigation
 map global normal o k
@@ -114,33 +161,55 @@ map global normal <s-l> <s-j>
 map global normal <s-k> <s-h>
 map global normal <s-p> <s-l>
 # map global normal <c-k> <a-b>
-map global normal <c-k> <a-s-b>
+map global normal <c-k> <s-b>
 # map global normal <c-p> <a-w>
-map global normal <c-p> <a-s-w>
+map global normal <c-p> <s-w>
 
-# c-o and c-l to move up/down half a page
-map global normal <c-o> 'vk'
-map global normal <c-l> 'vj'
+define-command -params 2 scroll -docstring 'scroll up/down count` scrolls count lines in that direction' %{
+  execute-keys %sh{
+    dir=$1
+    count=$2
+    set -- $kak_window_range
+    kak_window_top=$(($1 + 1))
+    kak_window_bottom=$(($1 + $3))
+    if [ $dir = "down" ]; then
+      if [ "$kak_window_top" = "$kak_cursor_line" ]; then
+        echo "<space><semicolon>${count}j${count}vj"
+      else
+        echo ${count}vj
+      fi
+    elif [ $dir = "up" ]; then
+      if [ "$kak_window_top" = 1 ]; then
+        echo ${count}k
+      elif [ "$kak_window_bottom" = "$kak_cursor_line" ]; then
+        echo "<space><semicolon>${count}k${count}vk"
+      else
+        echo ${count}vk
+      fi
+    fi
+} }
+# c-o and c-l to scroll
+map global normal <c-o> ': scroll up 1<ret>'
+map global normal <c-l> ': scroll down 1<ret>'
 
-# unlearn old habits
-map global insert <c-left> '<esc><a-b>i'
-map global insert <c-s-left> '<esc><a-s-b>i'
-map global insert <c-right> '<esc><a-w>a'
-map global insert <c-s-right> '<esc><a-s-w>a'
-map global insert <s-up> '<esc><s-up>'
-map global insert <s-down> '<esc><s-down>'
+# # unlearn old habits
+# map global insert <c-left> '<esc><a-b>i'
+# map global insert <c-s-left> '<esc><a-s-b>i'
+# map global insert <c-right> '<esc><a-w>a'
+# map global insert <c-s-right> '<esc><a-s-w>a'
+# map global insert <s-up> '<esc><s-up>'
+# map global insert <s-down> '<esc><s-down>'
 
-map global normal <up> ': echo use opkl da<ret>'
-map global normal <down> ': echo use opkl da<ret>'
-map global normal <left> ': echo use opkl da<ret>'
-map global normal <right> ': echo use opkl da<ret>'
-map global normal <s-up> ': echo use opkl da<ret>'
-map global normal <s-down> ': echo use opkl da<ret>'
-map global normal <s-left> ': echo use opkl da<ret>'
-map global normal <s-right> ': echo use opkl da<ret>'
-map global insert <up> '<esc>: echo use opkl da<ret>'
-map global insert <down> '<esc>: echo use opkl da<ret>'
-map global insert <left> '<esc>: echo use opkl da<ret>'
-map global insert <right> '<esc>: echo use opkl da<ret>'
+# map global normal <up> ': echo use opkl da<ret>'
+# map global normal <down> ': echo use opkl da<ret>'
+# map global normal <left> ': echo use opkl da<ret>'
+# map global normal <right> ': echo use opkl da<ret>'
+# map global normal <s-up> ': echo use opkl da<ret>'
+# map global normal <s-down> ': echo use opkl da<ret>'
+# map global normal <s-left> ': echo use opkl da<ret>'
+# map global normal <s-right> ': echo use opkl da<ret>'
+# map global insert <up> '<esc>: echo use opkl da<ret>'
+# map global insert <down> '<esc>: echo use opkl da<ret>'
+# map global insert <left> '<esc>: echo use opkl da<ret>'
+# map global insert <right> '<esc>: echo use opkl da<ret>'
 # map global insert <esc> ': echo use opkl da'
-

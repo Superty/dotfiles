@@ -38,7 +38,19 @@ bindkey '^[[3~' delete-char
 bindkey '^[[3;5~' delete-word
 bindkey -M menuselect '^[[Z' reverse-menu-complete
 bindkey '^Z'          push-input
+bindkey '^O' up-line-or-history
+bindkey '^L' down-line-or-history
+bindkey '^K' backward-word
+bindkey '^[' backward-char
+bindkey '^P' forward-word
+bindkey '^]' forward-char
+# ESC has a delay since it's used for chords and we want to use ^[ which is same as esc.
+# Avoid delay when using ^[
+KEYTIMEOUT=1
 
+# kak-man() {
+#   man $1 |
+# }
 
 # Set the title string at the top of your current terminal window or terminal window tab
 set-title() {
@@ -101,7 +113,7 @@ clear-line() {
 }
 
 fzf-shell() {
-  fzf-0.24.3 -i --ansi --height 40% --layout reverse --info inline --prompt "$(print -nP $PROMPT$1)"  ${=@[2,-1]}
+  fzf -i --ansi --height 40% --layout reverse --info inline --prompt "$(print -nP $PROMPT$1)"  ${=@[2,-1]}
 }
 
 fzftab-fzf() {
@@ -136,8 +148,8 @@ alias python='python3'
 alias tree='tree -C' # colours on always
 eval $(thefuck --alias)
 alias f='fuck -y'
-alias vz='echoeval kak ~/.zshrc'
-alias vb='vz'
+alias vb='echoeval kak ~/.zshrc'
+alias vk='echoeval kak ~/.config/kak/kakrc'
 alias vi='vim'
 alias disk-usage-analyzer='baobab'
 alias ranger='. ranger'
@@ -145,7 +157,7 @@ export FZF_COLORS="--color=dark,bg+:#231F33,gutter:-1,pointer:11,fg+:11,hl:1,hl+
 export FZF_DEFAULT_OPTS="--cycle --ansi $FZF_COLORS"
 zstyle ':fzf-tab:*' fzf-flags "$FZF_COLORS"
 zstyle ':fzf-tab:*' fzf-command fzf-shell
-alias fzf='fzf-0.24.3'
+# alias fzf='fzf-0.24.3'
 alias objdump='objdump -M intel'
 
 #autocorrect xD
@@ -158,12 +170,12 @@ clear-line() {
 }
 
 # fzf
-FZF_SHELL_DEFAULT_ARGS='-i --ansi --height 40% --layout reverse --info inline'
+FZF_SHELL_DEFAULT_ARGS='-i --ansi --height=40% --layout=reverse --info=inline'
 
-fzf_history_cd() {
+fzf_fasd_cd() {
   clear-line
   local IFS=' '
-  dest=$(fasd -Rdl | fzf-shell "cd " --filepath-word --tiebreak index | sed "s#^~#$HOME#")
+  dest=$(fasd -Rdl | sed "s#^$HOME#~#" | fzf-shell "cd " --filepath-word --tiebreak index | sed "s#^~#$HOME#")
   if [[ -n $dest ]]; then
     print -nP "$PROMPT"
     builtin cd $dest
@@ -172,8 +184,24 @@ fzf_history_cd() {
   fi
   zle reset-prompt
 }
-zle -N fzf_history_cd
-bindkey '^t' fzf_history_cd
+zle -N fzf_fasd_cd
+bindkey '^t' fzf_fasd_cd
+
+fzf_fasd_kak() {
+  clear-line
+  local IFS=' '
+  dest=$(fasd -Rfl | sed "s#^$HOME#~#" | fzf-shell "kak " --filepath-word --tiebreak index | sed "s#^~#$HOME#")
+  if [[ -n $dest ]]; then
+    print -nP "$PROMPT"
+    echo kak $dest
+    git diff ~/llvm-project/
+    # print -n "kak "
+    # print "$dest" | sed "s#^$HOME#~#"
+  fi
+  zle reset-prompt
+}
+zle -N fzf_fasd_kak
+bindkey '^e' fzf_fasd_kak
 
 uniq_history() {
   history 0 | sort -b -k 2 | tac | uniq -f 1 | sort -nk 1 | sed 's/\\\\n/\\\\\\n/g'
