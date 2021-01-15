@@ -38,12 +38,18 @@ bindkey '^[[3~' delete-char
 bindkey '^[[3;5~' delete-word
 bindkey -M menuselect '^[[Z' reverse-menu-complete
 bindkey '^Z'          push-input
+# ctrl-opkl to move up down, back/forward words; ctrl-[] to move back forward chars
 bindkey '^O' up-line-or-history
 bindkey '^L' down-line-or-history
 bindkey '^K' backward-word
 bindkey '^[' backward-char
 bindkey '^P' forward-word
 bindkey '^]' forward-char
+# alt-opkl to move up down, back/forward char
+bindkey '^[o' up-line-or-history
+bindkey '^[l' down-line-or-history
+bindkey '^[k' backward-char
+bindkey '^[p' forward-char
 # ESC has a delay since it's used for chords and we want to use ^[ which is same as esc.
 # Avoid delay when using ^[
 KEYTIMEOUT=1
@@ -211,7 +217,7 @@ fzf_history_search() {
   local IFS=' '
   result=$(uniq_history | sed 's/^ *[0-9]* *//' | fzf ${=FZF_SHELL_DEFAULT_ARGS} +s +m -x --tac -e -q "$BUFFER" --prompt "$(print -nP $PROMPT)")
   if [[ -n $result ]]; then
-    BUFFER=$(print -P $result)
+    BUFFER="$result"
   fi
   zle reset-prompt
   zle end-of-line
