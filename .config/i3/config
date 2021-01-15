@@ -259,9 +259,9 @@ bindsym $mod+x exec --no-startup-id change-volume -5% -n # increase left sound v
 # bindsym --release Control_L+home exec gnome-screenshot -w
 # bindsym --release Shift+home exec gnome-screenshot -a
 
-bindsym --release Print exec --no-startup-id maim ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S)
-bindsym --release $mod+Shift+s exec --no-startup-id maim ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S)
-bindsym --release Shift+Print exec --no-startup-id maim -s ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S)
+bindsym --release Print exec --no-startup-id maim ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png
+bindsym --release $mod+Shift+s exec --no-startup-id maim ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png
+bindsym --release Shift+Print exec --no-startup-id maim -s ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png
 bindsym --release $mod+s exec --no-startup-id maim -s ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png
 
 for_window [class="gnome-terminal-popup"] floating enable
