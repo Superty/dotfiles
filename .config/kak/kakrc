@@ -65,6 +65,7 @@ map global user <space> '<esc>'
 map global user f ': comment-line<ret>' -docstring "comment lines"
 map global user c '<a-|> xclip -in -selection clipboard >&- 2>&- <ret>' -docstring "copy to clipboard"
 map global user o ': fzf-files-git<ret>' -docstring 'open file in git repo or pwd with fzf'
+map global user g ': fzf-gdb<ret>' -docstring 'run gdb with file from fasd+fzf'
 
 # Plugins
 source "%val{config}/plugins/plug.kak/rc/plug.kak"
@@ -103,16 +104,42 @@ plug Superty/connect.kak %{
   # map global user h ": connect-terminal <ret>" -docstring "Spawn a connected terminal"
 }
 
+plug "occivink/kakoune-gdb" subset %{
+  gdb.kak
+} config %{
+  declare-option -hidden str gdb_mode ''
+# hook global GlobalSetOption gdb_program_stopped=false %{
+#   gdb-enable-autojump
+# }
+# hook global GlobalSetOption gdb_program_stopped=true %{
+#   gdb-enable-autojump
+# }
+}
+
+define-command enable-gdb-mode %{
+  set-option window gdb_mode '[gdb-mode]'
+  map window normal n ': gdb-next<ret>'
+  map window normal s ': gdb-step<ret>'
+  map window normal c ': gdb-continue-or-run<ret>'
+}
+define-command disable-gdb-mode %{
+  set-option window gdb_mode ''
+  unmap window normal n ': gdb-next<ret>'
+  unmap window normal s ': gdb-step<ret>'
+  unmap window normal c ': gdb-continue-or-run<ret>'
+}
+define-command toggle-gdb-mode %{ %sh{
+  if [ "$kak_opt_gdb_mode" = '[gdb-mode]' ]; then
+    echo "disable-gdb-mode"
+  else
+    echo "enable-gdb-mode"
+  fi
+} }
+map global normal <c-g> ': toggle-gdb-mode<ret>'
+
 plug "insipx/kak-crosshairs"
 cursorline
 set-face global crosshairs_line default,rgb:231F33
-
-# source "%val{config}/plugins/kakoune-gdb/gdb.kak"
-# source "%val{config}/plugins/kakoune-gdb/gdb-output-handler.perl"
-plug "occivink/kakoune-gdb" subset %{
-  # gdb-output-handler.perl
-  gdb.kak
-}
 
 plug "https://gitlab.com/Screwtapello/kakoune-state-save"
 
@@ -121,6 +148,9 @@ plug "https://gitlab.com/Screwtapello/kakoune-state-save"
 # }
 
 plug "eraserhd/kak-ansi"
+
+# default modeline with [gdb-mode] prependend if we are in gdb-mode.
+set-option global modelinefmt '%opt{gdb_mode} %val{bufname} %val{cursor_line}:%val{cursor_char_column} {{context_info}} {{mode_info}} - %val{client}@[%val{session}]'
 
 # invert x and a-x
 map global normal x <a-x>
