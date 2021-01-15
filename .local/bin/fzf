@@ -1,5 +1,5 @@
 #!/bin/sh
 FZF_COLORS="--color=dark,bg+:#231F33,gutter:-1,pointer:11,fg+:11,hl:1,hl+:1,prompt:4"
 # note: ctrl-backspace seems to send ^H
-FZF_BINDS="--bind=ctrl-o:up,ctrl-l:down,ctrl-k:backward-word,ctrl-p:forward-word,ctrl-h:backward-kill-word"
+FZF_BINDS="--bind=ctrl-o:up,ctrl-l:down,ctrl-k:backward-word,ctrl-p:forward-word,ctrl-h:backward-kill-word,tab:down,shift-tab:up"
 FZF_DEFAULT_OPTS="--cycle --ansi $FZF_COLORS $FZF_BINDS" /usr/bin/fzf-0.24.3 "$@"
