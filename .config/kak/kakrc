@@ -1,6 +1,8 @@
 add-highlighter global/ number-lines -hlcursor -separator ' '
 set-face global LineNumbers bright-yellow,default
 set-face global LineNumberCursor bright-yellow,default+r
+set-face global MenuBackground white,black
+set-face global MenuForeground black,white
 
 add-highlighter global/ show-matching
 set-face global MatchingChar blue,default+r
