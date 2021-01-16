@@ -8,9 +8,12 @@
 
 general {
   colors = true
-  color_good =     '#D0CFCC'
-  color_degraded = '#2191B6'
-  color_bad =      '#C65825'
+  # color_good =     '#D0CFCC'
+  # color_degraded = '#2191B6'
+  # color_bad =      '#C65825'
+  color_good = "#198844"
+  color_bad = "#CC342B"
+  color_degraded = "#FBA922"
   interval = 1
   separator = "  "
   #seperator = ' \| '
