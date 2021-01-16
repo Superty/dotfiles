@@ -181,12 +181,11 @@ FZF_SHELL_DEFAULT_ARGS='-i --ansi --height=40% --layout=reverse --info=inline'
 fzf_fasd_cd() {
   clear-line
   local IFS=' '
-  dest=$(fasd -Rdl | sed "s#^$HOME#~#" | fzf-shell "cd " --filepath-word --tiebreak index | sed "s#^~#$HOME#")
+  dest=$(fasd -Rdl | sed "s#^$HOME#~#" | fzf-shell "cd " --filepath-word --tiebreak index)
   if [[ -n $dest ]]; then
-    print -nP "$PROMPT"
-    builtin cd $dest
-    print -n "cd "
-    print "$dest" | sed "s#^$HOME#~#"
+    BUFFER="cd $dest"
+    zle reset-prompt
+    zle accept-line
   fi
   zle reset-prompt
 }
@@ -196,13 +195,11 @@ bindkey '^t' fzf_fasd_cd
 fzf_fasd_kak() {
   clear-line
   local IFS=' '
-  dest=$(fasd -Rfl | sed "s#^$HOME#~#" | fzf-shell "kak " --filepath-word --tiebreak index | sed "s#^~#$HOME#")
+  dest=$(fasd -Rfl | sed "s#^$HOME#~#" | fzf-shell "kak " --filepath-word --tiebreak index)
   if [[ -n $dest ]]; then
-    print -nP "$PROMPT"
-    echo kak $dest
-    git diff ~/llvm-project/
-    # print -n "kak "
-    # print "$dest" | sed "s#^$HOME#~#"
+    BUFFER="kak $dest"
+    zle reset-prompt
+    zle accept-line
   fi
   zle reset-prompt
 }
@@ -210,7 +207,7 @@ zle -N fzf_fasd_kak
 bindkey '^e' fzf_fasd_kak
 
 uniq_history() {
-  history 0 | sort -b -k 2 | tac | uniq -f 1 | sort -nk 1 | sed 's/\\\\n/\\\\\\n/g'
+  history 0 | sort -b -s -k 2 | tac | uniq -f 1 | sort -nk 1 | sed 's/\\\\n/\\\\\\n/g'
 }
 fzf_history_search() {
   clear-line
