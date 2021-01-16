@@ -68,7 +68,7 @@ bar {
   status_command i3status
   colors {
     background $base00
-    separator  $cyan
+    separator  $cyanD
     statusline $base05
 
     # State             Border  BG      Text
