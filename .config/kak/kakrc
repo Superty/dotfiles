@@ -137,7 +137,7 @@ map global normal <c-g> ': toggle-gdb-mode<ret>'
 
 plug "insipx/kak-crosshairs"
 cursorline
-set-face global crosshairs_line default,rgb:231F33
+set-face global crosshairs_line default,rgb:282a2e
 
 plug "https://gitlab.com/Screwtapello/kakoune-state-save"
 
