@@ -338,7 +338,7 @@ hide_edge_borders vertical
 focus_follows_mouse no
 
 # wallpaper
-exec_always --no-startup-id feh --bg-fill '~/.config/wallpaper/EriCk93WMAAyixy.jpeg'
+exec_always --no-startup-id feh --bg-fill '/home/arjun/.config/wallpaper/EriCk93WMAAyixy.jpeg'
 
 # next/prev workspace
 bindsym $mod+Tab workspace next 
