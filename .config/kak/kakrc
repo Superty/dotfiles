@@ -1,3 +1,6 @@
+# Hide release notes from latest version
+set-option global startup_info_version 20200901
+
 add-highlighter global/ number-lines -hlcursor -separator ' '
 set-face global LineNumbers bright-yellow,default
 set-face global LineNumberCursor bright-yellow,default+r
