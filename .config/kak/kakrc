@@ -11,8 +11,12 @@ set-face global MenuInfo green,default
 add-highlighter global/ show-matching
 set-face global MatchingChar blue,default+r
 
-hook global KakEnd .* %{ echo -to-file ~/.kak_history -quoting kakoune reg : %reg{:} }
-hook global KakBegin .* %{ try %{ source .kak_history } }
+# hook global KakEnd .* %{ echo -to-file ~/.kak_history -quoting kakoune reg : %reg{:} }
+# hook global KakBegin .* %{ try %{ source .kak_history } }
+
+hook global BufOpenFile .* %{ %sh{
+{ eval "fasd --proc $(fasd --sanitize cmd $kak_hook_param)"; } >> "/dev/null" 2>&1
+} }
 
 hook global InsertCompletionShow .* %{
   try %{
