@@ -111,7 +111,7 @@ client.background       $base07
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
-bindsym $mod+d exec --no-startup-id dmenu_run -nb '$base00' -nf '$base05' -sb '$cyanD' -sf '$base07'
+bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -i -nb '$base01' -nf '$base05' -sb '$cyanD' -sf '$base07'"
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
