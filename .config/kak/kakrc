@@ -7,6 +7,7 @@ set-face global LineNumberCursor bright-yellow,default+r
 set-face global MenuBackground white,black
 set-face global MenuForeground black,white
 set-face global MenuInfo green,default
+set-face global Error rgb:1a1c1d,red
 
 add-highlighter global/ show-matching
 set-face global MatchingChar blue,default+r
@@ -123,6 +124,8 @@ plug "occivink/kakoune-gdb" subset %{
 #   gdb-enable-autojump
 # }
 }
+
+plug "jjk96/kakoune-rainbow"
 
 define-command enable-gdb-mode %{
   set-option window gdb_mode '[gdb-mode]'
