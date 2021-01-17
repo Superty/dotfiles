@@ -69,13 +69,13 @@ bar {
   colors {
     background $base00
     separator  $cyanD
-    statusline $base05
+    statusline $base04
 
     # State             Border  BG      Text
     focused_workspace   $cyanD  $cyanD  $base07
     active_workspace    $blue   $base03 $base00
     inactive_workspace  $base00 $base01 $base05
-    urgent_workspace    $red    $red    $base00    
+    urgent_workspace    $red    $red    $base00
     binding_mode        $base00 $yellow $base00    
   }
 }
