@@ -1,3 +1,6 @@
+# todo: fzf + lsp-document-symbol?
+# todo: set-faces for lsp-semantic-token and hook it
+
 # Hide release notes from latest version
 set-option global startup_info_version 20200901
 
@@ -77,6 +80,8 @@ map global user f ': comment-line<ret>' -docstring "comment lines"
 map global user c '<a-|> xclip -in -selection clipboard >&- 2>&- <ret>' -docstring "copy to clipboard"
 map global user o ': fzf-files-git<ret>' -docstring 'open file in git repo or pwd with fzf'
 map global user g ': fzf-gdb<ret>' -docstring 'run gdb with file from fasd+fzf'
+map global user r ': ranger<ret>' -docstring 'run ranger'
+map global user s ': lsp-document-symbol<ret>' -docstring 'goto document symbol'
 
 # Plugins
 source "%val{config}/plugins/plug.kak/rc/plug.kak"
@@ -102,6 +107,7 @@ plug Superty/connect.kak %{
   require-module connect
   # require-module connect-lf
   require-module connect-fzf
+  require-module connect-ranger
 
   # hook global RuntimeError "\d+:\d+: '\w+' (.*): is a directory" %{
   #   evaluate-commands %sh{
