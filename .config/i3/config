@@ -332,7 +332,9 @@ bindsym --release $mod+Shift+s exec --no-startup-id maim ~/Pictures/Screenshot_$
 bindsym --release Shift+Print exec --no-startup-id maim -s ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png
 bindsym --release $mod+s exec --no-startup-id maim -s ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png
 
+# allow making floating "popup" terminals
 for_window [class="gnome-terminal-popup"] floating enable
+popup_during_fullscreen smart
 
 # misc
 default_border pixel 2
