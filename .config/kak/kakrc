@@ -1,5 +1,11 @@
 # todo: fzf + lsp-document-symbol?
 # todo: set-faces for lsp-semantic-token and hook it
+# todo: bufopen hook shouldn't trigger for first open, since that fasd updates for that from zsh hook
+# todo: fix ctrl-d to care about whitespace
+# todo: clippy background colour
+# todo: alt-kp for stopping at camelcase word boundaries
+# todo: prompt mode mappings
+# todo: can we i3-msg to exit fullscreen when creating popup?
 
 # Hide release notes from latest version
 set-option global startup_info_version 20200901
@@ -7,10 +13,11 @@ set-option global startup_info_version 20200901
 add-highlighter global/ number-lines -hlcursor -separator ' '
 set-face global LineNumbers bright-yellow,default
 set-face global LineNumberCursor bright-yellow,default+r
-set-face global MenuBackground white,black
+set-face global MenuBackground white,rgb:282a2e
 set-face global MenuForeground white,bright-blue
 set-face global MenuInfo green,default
 set-face global Error rgb:1a1c1d,red
+set-face global Information rgb:282a2e,cyan
 
 add-highlighter global/ show-matching
 set-face global MatchingChar blue,default+r
@@ -33,6 +40,7 @@ hook global InsertCompletionShow .* %{
     map window insert <s-tab> <c-p>
   }
 }
+
 hook global InsertCompletionHide .* %{
     unmap window insert <tab> <c-n>
     unmap window insert <s-tab> <c-p>
@@ -169,13 +177,17 @@ plug "eraserhd/kak-ansi"
 # default modeline with [gdb-mode] prependend if we are in gdb-mode.
 set-option global modelinefmt '%opt{gdb_mode} %val{bufname} %val{cursor_line}:%val{cursor_char_column} {{context_info}} {{mode_info}} - %val{client}@[%val{session}]'
 
-# invert x and a-x
+# swap x and a-x
 map global normal x <a-x>
 map global normal <a-x> x
 
-# invert r and R
+# swap r and R
 map global normal r R
 map global normal R r
+
+# d doesn't yank, <a-d> does
+map global normal d <a-d>
+map global norma <a-d> d
 
 # <a-e> to go to definition
 map global normal <a-e> ': lsp-definition<ret>vv'
@@ -242,6 +254,9 @@ map global normal <c-o> ': scroll up 1<ret>'
 map global normal <c-l> ': scroll down 1<ret>'
 map global normal <c-up> ': scroll up 1<ret>'
 map global normal <c-down> ': scroll down 1<ret>'
+
+map global normal <c-a-o> <c-u>
+map global normal <c-a-l> <c-d>
 
 # # unlearn old habits
 # map global insert <c-left> '<esc><a-b>i'

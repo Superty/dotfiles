@@ -31,8 +31,14 @@ setopt autocd autopushd pushdignoredups
 autoload -Uz colors && colors
 
 bindkey -e
-bindkey '^[[1;5C' forward-word
-bindkey '^[[1;5D' backward-word
+# bindkey '^[[1;5C' forward-word
+# bindkey '^[[1;5D' backward-word
+bindkey '^[[1;5C' undefined-key
+bindkey '^[[1;5D' undefined-key
+bindkey '^[[A' undefined-key
+bindkey '^[[B' undefined-key
+bindkey '^[[C' undefined-key
+bindkey '^[[D' undefined-key
 bindkey '^H' backward-delete-word
 bindkey '^[[3~' delete-char
 bindkey '^[[3;5~' delete-word
