@@ -2,11 +2,9 @@
 # todo: set-faces for lsp-semantic-token
 # todo: bufopen hook shouldn't trigger for first open, since that fasd updates for that from zsh hook
 # todo: fix ctrl-d to care about whitespace
-# todo: clippy background colour
-# todo: alt-kp for stopping at camelcase word boundaries
-# todo: prompt mode mappings
-# todo: can we i3-msg to exit fullscreen when creating popup?
-# todo: menu colour distinguish from highlight line
+# todo: alt-[kp] for stopping at camelcase word boundaries
+# crosshairs_line overwrites error background colour
+# restore open tabs when opening in "workspace" (git ? repo : dir)
 
 # Hide release notes from latest version
 set-option global startup_info_version 20200901
@@ -26,9 +24,21 @@ set-face global MatchingChar blue,default+r
 # hook global KakEnd .* %{ echo -to-file ~/.kak_history -quoting kakoune reg : %reg{:} }
 # hook global KakBegin .* %{ try %{ source .kak_history } }
 
-hook global BufOpenFile .* %{ %sh{
-{ eval "fasd --proc $(fasd --sanitize cmd $kak_hook_param)"; } >> "/dev/null" 2>&1
-} }
+# need a better solution. this doesn't work if we start without args and then open.
+# declare-option -hidden bool first_buf_open true
+hook global BufOpenFile .* %{
+  # echo -debug %opt{first_buf_open}
+  nop %sh{
+    # if [ $kak_opt_first_buf_open = "false" ]; then
+      { eval "fasd --proc $(fasd --sanitize cmd $kak_hook_param)"; } >> "/dev/null" 2>&1
+    # fi
+  }
+  # evaluate-commands %sh{
+  #   if [ $kak_opt_first_buf_open = "true" ]; then
+  #     echo set-option window first_buf_open false
+  #   fi
+  # }
+}
 
 hook global InsertCompletionShow .* %{
   try %{
@@ -51,21 +61,9 @@ hook global BufSetOption filetype=gas %{
   set-option buffer comment_line '#'
 }
 
-# hook global BufCreate '\*stdin(?:-\d+)?\*' %{
-#   # gnome-terminal-popup fzf
-#   hook global BufCloseFifo .* %{
-#     gnome-terminal-popup fzf
-#     exec "gg"
-#   }
-# }
 hook global InsertChar \t %{ exec -draft -itersel h@ }
 set global tabstop 2
 set global indentwidth 2
-
-# hook global InsertChar l %{ try %{
-#   exec -draft hH <a-k>kl<ret> d
-#   exec <esc>
-# }}
 
 define-command -hidden -docstring \
 "select a word under cursor, or add cursor on next occurrence of current selection" \
@@ -78,6 +76,16 @@ select-or-add-cursor %{
   } catch nop
 }
 map global normal '<c-d>' ': select-or-add-cursor<ret>' -docstring "add cursor on current word, and jump to the next match"
+define-command -hidden -docstring \
+"add cursor on next occurrence of current selection" \
+add-cursor %{
+  try %{
+    execute-keys "<a-k>\A.\z<ret>"
+    execute-keys -save-regs '' "_<a-i>w*"
+  } catch %{
+    execute-keys -save-regs '' "_*<s-n>"
+  } catch nop
+}
 # map global insert '<c-d>' '<esc>: select-or-add-cursor<ret>i' -docstring "add cursor on current word, and jump to the next match"
 
 map global normal <esc> <space>
@@ -119,6 +127,9 @@ plug "kak-lsp/kak-lsp" do %{
   hook global WinSetOption filetype=cpp %{
     hook window BufWritePre .* lsp-formatting-sync
   }
+  set-face global Reference default,default+ub
+  set-face global DiagnosticError Error
+  set-face global DiagnosticWarning rgb:1a1c1d,yellow
 }
 # eval %sh{kak-lsp --kakoune -s $kak_session}
 lsp-enable
@@ -135,30 +146,14 @@ hook global ModuleLoaded x11 %{
 plug alexherbo2/prelude.kak
 plug Superty/connect.kak %{
   require-module connect
-  # require-module connect-lf
   require-module connect-fzf
   require-module connect-ranger
-
-  # hook global RuntimeError "\d+:\d+: '\w+' (.*): is a directory" %{
-  #   evaluate-commands %sh{
-  #     directory=$kak_hook_param_capture_1
-  #     echo lf $directory
-  #   }
-  # }
-
-  # map global user h ": connect-terminal <ret>" -docstring "Spawn a connected terminal"
 }
 
 plug "occivink/kakoune-gdb" subset %{
   gdb.kak
 } config %{
   declare-option -hidden str gdb_mode ''
-# hook global GlobalSetOption gdb_program_stopped=false %{
-#   gdb-enable-autojump
-# }
-# hook global GlobalSetOption gdb_program_stopped=true %{
-#   gdb-enable-autojump
-# }
 }
 
 plug "jjk96/kakoune-rainbow"
@@ -168,12 +163,18 @@ define-command enable-gdb-mode %{
   map window normal n ': gdb-next<ret>'
   map window normal s ': gdb-step<ret>'
   map window normal c ': gdb-continue-or-run<ret>'
+  map window normal b ': gdb-toggle-breakpoint<ret>'
+  map window normal <c-u> ': gdb-backtrace-up<ret>'
+  map window normal <c-j> ': gdb-backtrace-down<ret>'
 }
 define-command disable-gdb-mode %{
   set-option window gdb_mode ''
   unmap window normal n ': gdb-next<ret>'
   unmap window normal s ': gdb-step<ret>'
   unmap window normal c ': gdb-continue-or-run<ret>'
+  unmap window normal b ': gdb-toggle-breakpoint<ret>'
+  unmap window normal <c-u> ': gdb-backtrace-up<ret>'
+  unmap window normal <c-j> ': gdb-backtrace-down<ret>'
 }
 define-command toggle-gdb-mode %{ %sh{
   if [ "$kak_opt_gdb_mode" = '[gdb-mode]' ]; then
@@ -196,8 +197,11 @@ plug "https://gitlab.com/Screwtapello/kakoune-state-save"
 
 plug "eraserhd/kak-ansi"
 
-# default modeline with [gdb-mode] prependend if we are in gdb-mode.
-set-option global modelinefmt '%opt{gdb_mode} %val{bufname} %val{cursor_line}:%val{cursor_char_column} {{context_info}} {{mode_info}} - %val{client}@[%val{session}]'
+set-option global modelinefmt ''
+set-option -add global modelinefmt '%opt{gdb_mode} '
+set-option -add global modelinefmt '{DiagnosticError}%sh{ n=$kak_opt_lsp_diagnostic_error_count; if [ $n -eq 1 ]; then echo " 1 error "; elif [ $n -gt 1 ]; then echo " $n errors "; fi }{Default} '
+set-option -add global modelinefmt '{DiagnosticWarning}%sh{ n=$kak_opt_lsp_diagnostic_warning_count; if [ $n -eq 1 ]; then echo " 1 warning "; elif [ $n -gt 1 ]; then echo " $n warnings "; fi }{Default} '
+set-option -add global modelinefmt '%val{bufname} %val{cursor_line}:%val{cursor_char_column} {{context_info}} {{mode_info}} '
 
 # swap x and a-x
 map global normal x <a-x>
