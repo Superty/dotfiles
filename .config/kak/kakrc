@@ -1,10 +1,13 @@
 # todo: fzf + lsp-document-symbol?
 # todo: set-faces for lsp-semantic-token
 # todo: bufopen hook shouldn't trigger for first open, since that fasd updates for that from zsh hook
-# todo: fix ctrl-d to care about whitespace
+# todo: fix ctrl-d to care about whitespace.
+# todo: if single char highlighted, first c-d should * and second should N (or is that already the case??)
 # todo: alt-[kp] for stopping at camelcase word boundaries
-# crosshairs_line overwrites error background colour
-# restore open tabs when opening in "workspace" (git ? repo : dir)
+# todo: crosshairs_line overwrites error background colour
+# todo: restore open tabs when opening in "workspace" (git ? repo : dir)
+# todo: buffer plugin
+# debug: gdb-backtrace-up: gdb-backtrace no such buffer
 
 # Hide release notes from latest version
 set-option global startup_info_version 20200901
@@ -97,15 +100,16 @@ define-command -hidden i3-leave-fullscreen %{
   nop %sh{ i3-msg fullscreen disable }
 }
 
-# Comment Line
-map global user f ': comment-line<ret>' -docstring "comment lines"
+map global menu <ret> <esc>
+
+map global user / ': comment-line<ret>' -docstring "comment lines"
 map global user c '<a-|> xclip -in -selection clipboard >&- 2>&- <ret>' -docstring "copy to clipboard"
 map global user o ': i3-leave-fullscreen<ret>: fzf-files-git<ret>' -docstring 'open file in git repo or pwd with fzf'
 map global user g ': i3-leave-fullscreen<ret>: fzf-gdb<ret>' -docstring 'run gdb with file from fasd+fzf'
 map global user r ': i3-leave-fullscreen<ret>: ranger<ret>' -docstring 'run ranger'
-map global user s ': lsp-document-symbol<ret>' -docstring 'goto document symbol'
+map global user s ': lsp-document-symbol<ret>/' -docstring 'search document symbols'
 map global user S ': lsp-workspace-symbol-incr<ret>' -docstring 'lsp-workspace-symbol-inc'
-map global user h ': lsp-hover<ret>' -docstring 'lsp-hover'
+map global user f ': lsp-hover<ret>' -docstring 'lsp-hover'
 
 # Plugins
 source "%val{config}/plugins/plug.kak/rc/plug.kak"
@@ -131,8 +135,10 @@ plug "kak-lsp/kak-lsp" do %{
   set-face global DiagnosticError Error
   set-face global DiagnosticWarning rgb:1a1c1d,yellow
 }
+
 # eval %sh{kak-lsp --kakoune -s $kak_session}
 lsp-enable
+
 # set global lsp_cmd "kak-lsp -s %val{session} -vvv --log /tmp/kak-lsp.log"
 source "%val{config}/gnome-terminal.kak"
 require-module gnome-terminal
@@ -167,6 +173,7 @@ define-command enable-gdb-mode %{
   map window normal <c-u> ': gdb-backtrace-up<ret>'
   map window normal <c-j> ': gdb-backtrace-down<ret>'
 }
+
 define-command disable-gdb-mode %{
   set-option window gdb_mode ''
   unmap window normal n ': gdb-next<ret>'
@@ -176,6 +183,7 @@ define-command disable-gdb-mode %{
   unmap window normal <c-u> ': gdb-backtrace-up<ret>'
   unmap window normal <c-j> ': gdb-backtrace-down<ret>'
 }
+
 define-command toggle-gdb-mode %{ %sh{
   if [ "$kak_opt_gdb_mode" = '[gdb-mode]' ]; then
     echo "disable-gdb-mode"
@@ -189,18 +197,32 @@ plug "insipx/kak-crosshairs"
 cursorline
 set-face global crosshairs_line default,rgb:282a2e
 
-plug "https://gitlab.com/Screwtapello/kakoune-state-save"
+plug "https://gitlab.com/Screwtapello/kakoune-state-save" %{
+  hook global KakBegin .* %{
+      state-save-reg-load colon
+      state-save-reg-load pipe
+      state-save-reg-load slash
+  }
 
-# plug "alexherbo2/view-mode.kak" %{
-#   require-module view-mode
-# }
+  hook global KakEnd .* %{
+      state-save-reg-save colon
+      state-save-reg-save pipe
+      state-save-reg-save slash
+  }
+  hook global FocusOut .* %{ state-save-reg-save dquote }
+  hook global FocusIn  .* %{ state-save-reg-load dquote }
+}
 
 plug "eraserhd/kak-ansi"
 
+plug 'delapouite/kakoune-select-view' %{
+  map global normal <a-%> ': select-view<ret>' -docstring 'select view'
+}
+
 set-option global modelinefmt ''
 set-option -add global modelinefmt '%opt{gdb_mode} '
-set-option -add global modelinefmt '{DiagnosticError}%sh{ n=$kak_opt_lsp_diagnostic_error_count; if [ $n -eq 1 ]; then echo " 1 error "; elif [ $n -gt 1 ]; then echo " $n errors "; fi }{Default} '
-set-option -add global modelinefmt '{DiagnosticWarning}%sh{ n=$kak_opt_lsp_diagnostic_warning_count; if [ $n -eq 1 ]; then echo " 1 warning "; elif [ $n -gt 1 ]; then echo " $n warnings "; fi }{Default} '
+set-option -add global modelinefmt '{DiagnosticError}%sh{ n=$kak_opt_lsp_diagnostic_error_count; if [ $n -eq 1 ]; then echo "[1 error]"; elif [ $n -gt 1 ]; then echo "[$n errors]"; fi }{Default} '
+set-option -add global modelinefmt '{DiagnosticWarning}%sh{ n=$kak_opt_lsp_diagnostic_warning_count; if [ $n -eq 1 ]; then echo "[1 warning]"; elif [ $n -gt 1 ]; then echo "[$n warnings]"; fi }{Default} '
 set-option -add global modelinefmt '%val{bufname} %val{cursor_line}:%val{cursor_char_column} {{context_info}} {{mode_info}} '
 
 # swap x and a-x
