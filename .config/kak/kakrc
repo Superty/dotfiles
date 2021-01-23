@@ -73,9 +73,9 @@ define-command -hidden -docstring \
 select-or-add-cursor %{
   try %{
     execute-keys "<a-k>\A.\z<ret>"
-    execute-keys -save-regs '' "_<a-i>w*"
+    execute-keys -save-regs '' "<a-i>w*"
   } catch %{
-    execute-keys -save-regs '' "_*<s-n>"
+    execute-keys -save-regs '' "*<s-n>"
   } catch nop
 }
 map global normal '<c-d>' ': select-or-add-cursor<ret>' -docstring "add cursor on current word, and jump to the next match"
@@ -84,9 +84,9 @@ define-command -hidden -docstring \
 add-cursor %{
   try %{
     execute-keys "<a-k>\A.\z<ret>"
-    execute-keys -save-regs '' "_<a-i>w*"
+    execute-keys -save-regs '' "<a-i>w*"
   } catch %{
-    execute-keys -save-regs '' "_*<s-n>"
+    execute-keys -save-regs '' "*<s-n>"
   } catch nop
 }
 # map global insert '<c-d>' '<esc>: select-or-add-cursor<ret>i' -docstring "add cursor on current word, and jump to the next match"
