@@ -229,7 +229,7 @@ zle -N fzf_history_search
 bindkey '^r' fzf_history_search
 
 # completion
-fpath=(~/.zsh/ninja-completion $fpath)
+fpath=(~/.zsh/completions $fpath)
 source ~/.zsh/fullpath_git_completion.zsh
 
 # gcloud stuff
