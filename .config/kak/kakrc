@@ -8,7 +8,6 @@
 # todo: restore open tabs when opening in "workspace" (git ? repo : dir)
 # todo: buffer plugin
 # debug: gdb-backtrace-up: gdb-backtrace no such buffer
-# todo: alacritty popup dimensions 
 
 # Hide release notes from latest version
 set-option global startup_info_version 20200901
@@ -144,7 +143,7 @@ lsp-enable
 source "%val{config}/gnome-terminal.kak"
 require-module gnome-terminal
 
-plug "alexherbo2/alacritty.kak" %{
+plug "Superty/alacritty.kak" %{
   require-module alacritty
 }
 hook global ModuleLoaded x11 %{
