@@ -1,8 +1,6 @@
 # todo: fzf + lsp-document-symbol?
 # todo: set-faces for lsp-semantic-token
 # todo: bufopen hook shouldn't trigger for first open, since that fasd updates for that from zsh hook
-# todo: fix ctrl-d to care about whitespace.
-# todo: if single char highlighted, first c-d should * and second should N (or is that already the case??)
 # todo: alt-[kp] for stopping at camelcase word boundaries
 # todo: crosshairs_line overwrites error background colour
 # todo: restore open tabs when opening in "workspace" (git ? repo : dir)
