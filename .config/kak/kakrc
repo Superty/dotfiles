@@ -6,6 +6,7 @@
 # todo: restore open tabs when opening in "workspace" (git ? repo : dir)
 # todo: buffer plugin
 # debug: gdb-backtrace-up: gdb-backtrace no such buffer
+# todo powerline
 
 # Hide release notes from latest version
 set-option global startup_info_version 20200901
@@ -14,7 +15,8 @@ add-highlighter global/ number-lines -hlcursor -separator ' '
 set-face global LineNumbers yellow,default
 set-face global LineNumberCursor bright-yellow,default+r
 set-face global MenuBackground white,black
-set-face global MenuForeground white,bright-blue
+set-face global MenuForeground Information
+# set-face global MenuForeground white,rgb:01477b
 set-face global MenuInfo green,default
 set-face global Error rgb:1a1c1d,red
 set-face global Information rgb:282a2e,cyan
@@ -165,6 +167,10 @@ plug "occivink/kakoune-gdb" subset %{
 }
 
 plug "jjk96/kakoune-rainbow"
+
+plug "jdugan6240/powerline.kak" config %{
+    # powerline-start
+}
 
 define-command enable-gdb-mode %{
   set-option window gdb_mode '[gdb-mode]'
