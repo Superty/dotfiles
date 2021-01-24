@@ -108,6 +108,7 @@ map global user r ': i3-leave-fullscreen<ret>: ranger<ret>' -docstring 'run rang
 map global user s ': lsp-document-symbol<ret>/' -docstring 'search document symbols'
 map global user S ': lsp-workspace-symbol-incr<ret>' -docstring 'lsp-workspace-symbol-inc'
 map global user f ': lsp-hover<ret>' -docstring 'lsp-hover'
+map global user w ': w<ret>' -docstring 'write'
 
 # Plugins
 source "%val{config}/plugins/plug.kak/rc/plug.kak"
@@ -132,10 +133,10 @@ plug "kak-lsp/kak-lsp" do %{
   set-face global Reference default,default+ub
   set-face global DiagnosticError Error
   set-face global DiagnosticWarning rgb:1a1c1d,yellow
+  lsp-enable
 }
 
 # eval %sh{kak-lsp --kakoune -s $kak_session}
-lsp-enable
 
 # set global lsp_cmd "kak-lsp -s %val{session} -vvv --log /tmp/kak-lsp.log"
 source "%val{config}/gnome-terminal.kak"

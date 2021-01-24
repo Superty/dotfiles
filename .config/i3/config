@@ -6,7 +6,7 @@ set $up o
 set $down l
 
 # colour mappings
-set $base00 #1A1C1D
+set $base00 #1a1c1d
 set $base01 #282a2e
 set $base02 #373b41
 set $base03 #969896
@@ -266,22 +266,22 @@ bindsym $mod+b mode "change brightness: w/s, up/down, o/l"
 
 # CUSTOM
 # move easily, within the workspace
-mode "move in workspace" {
-	bindsym a focus left
-	bindsym s focus down
-	bindsym w focus up
-	bindsym d focus right
-	bindsym Shift+a move left
-	bindsym Shift+s move down
-	bindsym Shift+w move up
-	bindsym Shift+d move right
+# mode "move in workspace" {
+# 	bindsym a focus left
+# 	bindsym s focus down
+# 	bindsym w focus up
+# 	bindsym d focus right
+# 	bindsym Shift+a move left
+# 	bindsym Shift+s move down
+# 	bindsym Shift+w move up
+# 	bindsym Shift+d move right
 
-    bindsym q mode "default"
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-	bindsym $mod+Shift+w mode "default"
-}
-bindsym $mod+Shift+w mode "move in workspace"
+#     bindsym q mode "default"
+#     bindsym Return mode "default"
+#     bindsym Escape mode "default"
+# 	bindsym $mod+Shift+w mode "default"
+# }
+# bindsym $mod+Shift+w mode "move in workspace"
 
 # lady (I no longer recall what this pun was about)
 # edit many years later: stormlight pun
@@ -355,6 +355,7 @@ bindsym $mod+e exec --no-startup-id rename-workspace
 # NetworkManager applet
 exec --no-startup-id nm-applet
 exec_always --no-startup-id setxkbmap -option caps:swapescape
+exec picom &
 
 # assign windows to workspaces
 for_window [class="Spotify"] move to workspace $ws9
