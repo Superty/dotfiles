@@ -117,7 +117,7 @@ bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -i -nb '$bas
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec gnome-terminal
+bindsym $mod+Return exec alacritty
 
 # kill focused window (previously $mod+Shift+q)
 bindsym $mod+q kill
@@ -333,7 +333,7 @@ bindsym --release Shift+Print exec --no-startup-id maim -s ~/Pictures/Screenshot
 bindsym --release $mod+s exec --no-startup-id maim -s ~/Pictures/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png
 
 # allow making floating "popup" terminals
-for_window [class="gnome-terminal-popup"] floating enable
+for_window [instance="Alacritty Popup"] floating enable
 popup_during_fullscreen smart
 
 # misc
