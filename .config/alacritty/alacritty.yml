@@ -14,14 +14,14 @@
 # Any items in the `env` entry below will be added as
 # environment variables. Some entries may override variables
 # set by alacritty itself.
-#env:
+env:
   # TERM variable
   #
   # This value is used to set the `$TERM` environment variable for
   # each instance of Alacritty. If it is not present, alacritty will
   # check the local terminfo database and use `alacritty` if it is
   # available, otherwise `xterm-256color` is used.
-  #TERM: alacritty
+  TERM: xterm-256color
 
 window:
   # Window dimensions (changes require restart)
@@ -45,9 +45,9 @@ window:
   #
   # Blank space added around the window in pixels. This padding is scaled
   # by DPI and the specified value is always added at both opposing sides.
-  #padding:
-  #  x: 0
-  #  y: 0
+  padding:
+   x: 6
+   y: 2
 
   # Spread additional padding evenly around the terminal content.
   #dynamic_padding: false
@@ -322,11 +322,11 @@ colors:
   # Bright colors
   bright:
     black:   '0x969896'
-    red:     '0xf96a38'
-    green:   '0x282a2e'
+    red:     '0xcc342b'
+    green:   '0x198844'
     yellow:  '0xfba922'
     blue:    '0xb4b7b4'
-    magenta: '0xe0e0e0'
+    magenta: '0xa36ac7'
     cyan:    '0x0474a2'
     white:   '0xffffff'
 
@@ -377,7 +377,8 @@ draw_bold_text_with_bright_colors: false
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 0.985
+background_opacity: 1.0
+# background_opacity: 0.985
 
 #selection:
   # This string contains all characters that are used as separators for

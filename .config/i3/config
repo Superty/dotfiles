@@ -65,9 +65,11 @@ font pango:inconsolata 13
 # finds out, if available)
 
 bar {
+  i3bar_command i3bar
   status_command i3status
+  position bottom
   colors {
-    background $base00
+    background #1a1c1d
     separator  $cyanD
     statusline $base04
 
@@ -99,7 +101,7 @@ bar {
 
 # Basic color configuration using the Base16 variables for windows and borders.
 # Property Name         Border  BG      Text    Indicator Child Border
-client.focused          $cyanD  $cyanD  $base07 $cyanD    $cyanD
+client.focused          $cyanD  $cyanD  $base07 $cyanD    $yellow
 client.focused_inactive $base01 $base01 $base05 $base03   $base01
 client.unfocused        $base01 $base00 $base05 $base01   $base01
 client.urgent           $base08 $base08 $base00 $base08   $base08
@@ -338,7 +340,7 @@ for_window [instance="Alacritty Popup"] floating enable
 popup_during_fullscreen smart
 
 # misc
-default_border pixel 2
+default_border pixel 0
 hide_edge_borders vertical
 focus_follows_mouse no
 
@@ -359,3 +361,7 @@ exec picom &
 
 # assign windows to workspaces
 for_window [class="Spotify"] move to workspace $ws9
+
+gaps inner 7
+gaps bottom 1
+gaps right 1
