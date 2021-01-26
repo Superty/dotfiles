@@ -7,13 +7,15 @@
 # todo: buffer plugin
 # debug: gdb-backtrace-up: gdb-backtrace no such buffer
 # todo powerline
+# todo: fzf-files list files sorted first by fasd score, then rest
+# todo: lsp format files only if they were formatted to begin with, maybe print warning 
 
 # Hide release notes from latest version
 set-option global startup_info_version 20200901
 
 add-highlighter global/ number-lines -hlcursor -separator ' '
-set-face global LineNumbers yellow,default
-set-face global LineNumberCursor bright-yellow,default+r
+set-face global LineNumbers green,default
+set-face global LineNumberCursor +r@LineNumbers
 set-face global MenuBackground white,black
 set-face global MenuForeground Information
 # set-face global MenuForeground white,rgb:01477b
@@ -111,6 +113,8 @@ map global user s ': lsp-document-symbol<ret>/' -docstring 'search document symb
 map global user S ': lsp-workspace-symbol-incr<ret>' -docstring 'lsp-workspace-symbol-inc'
 map global user f ': lsp-hover<ret>' -docstring 'lsp-hover'
 map global user w ': w<ret>' -docstring 'write'
+map global user [ ': lsp-find-error --previous<ret>'
+map global user ] ': lsp-find-error<ret>'
 
 # Plugins
 source "%val{config}/plugins/plug.kak/rc/plug.kak"
