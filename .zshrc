@@ -82,7 +82,7 @@ preexec() {
 }
 
 PROMPT='%{%1F%}%n@%m %{%3F%}%~ %{%B%4F%}%#%{%f%b%} '
-RPROMPT='%0F(⮡%?) %*'
+RPROMPT='%0F(↪%?) %*'
 
 # turn off annoying ctrl+s to stop
 stty -ixon

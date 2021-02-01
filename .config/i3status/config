@@ -7,6 +7,7 @@
 # If the above line is not correctly displayed, fix your editor first!
 
 general {
+  output_format = "i3bar"
   colors = true
   # color_good =     '#D0CFCC'
   # color_degraded = '#2191B6'
@@ -15,16 +16,53 @@ general {
   color_bad = "#CC342B"
   color_degraded = "#FBA922"
   interval = 1
-  separator = "  "
+#  separator = ""
   #seperator = ' \| '
 }
 
+order += "read_file playerctl"
 order += "volume master"
-# order += "disk /new"
-# order += "disk /"
-# order += "wireless _first_"
 order += "battery all"
-order += "tztime local"
+order += "tztime date"
+order += "tztime time"
+order += "tztime separator"
+
+read_file playerctl {
+  path = "/tmp/now_playing"
+  format = "%content"
+  format_bad = ""
+  separator_block_width = 50
+}
+
+volume master {
+	format = "♪: %volume"
+	format_muted = "♪: muted (%volume)"
+	device = "pulse"
+  separator_block_width = 50
+}
+
+battery all {
+  format = "%status %percentage %remaining"
+  integer_battery_capacity = true
+  last_full_capacity = false
+  separator_block_width = 50
+  hide_seconds = true
+}
+
+tztime date {
+  format = "%d %B"
+  separator_block_width = 50
+}
+tztime time {
+  format = "%H:%M:%S"
+  separator_block_width = 50
+}
+tztime separator {
+format = ""
+}
+
+
+################### unused:
 
 wireless _first_ {
   format_up = "W: (%quality at %essid) %ip"
@@ -36,19 +74,6 @@ ethernet _first_ {
   # if you use %speed, i3status requires root privileges
   format_up = "E: %ip (%speed)"
   format_down = "E: down"
-  separator_block_width = 20
-}
-
-battery all {
-  format = "%status %percentage %remaining"
-  integer_battery_capacity = true
-  last_full_capacity = false
-  separator_block_width = 20
-  hide_seconds = true
-}
-
-tztime local {
-  format = "%Y-%m-%d %H:%M:%S"
   separator_block_width = 20
 }
 
@@ -67,13 +92,6 @@ disk "/new" {
 	format = "new %avail"
 	threshold_type = "gbytes_avail"
 	low_threshold = 3
-  separator_block_width = 20
-}
-
-volume master {
-	format = "♪: %volume"
-	format_muted = "♪: muted (%volume)"
-	device = "pulse"
   separator_block_width = 20
 }
 

@@ -66,7 +66,7 @@ font pango:inconsolata 13
 
 bar {
   i3bar_command i3bar
-  status_command i3status
+  status_command myi3status
   position bottom
   colors {
     background #1a1c1d
@@ -113,7 +113,7 @@ client.background       $base07
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
-bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -i -nb '$base01' -nf '$base05' -sb '$cyanD' -sf '$base07'"
+bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -i -nb '$base00' -nf '$base05' -sb '$cyanD' -sf '$base07'"
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -362,6 +362,6 @@ exec picom &
 # assign windows to workspaces
 for_window [class="Spotify"] move to workspace $ws9
 
-gaps inner 7
+gaps inner 8
 gaps bottom 1
 gaps right 1

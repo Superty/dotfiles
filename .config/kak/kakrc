@@ -112,9 +112,11 @@ map global user r ': i3-leave-fullscreen<ret>: ranger<ret>' -docstring 'run rang
 map global user s ': lsp-document-symbol<ret>/' -docstring 'search document symbols'
 map global user S ': lsp-workspace-symbol-incr<ret>' -docstring 'lsp-workspace-symbol-inc'
 map global user f ': lsp-hover<ret>' -docstring 'lsp-hover'
-map global user w ': w<ret>' -docstring 'write'
-map global user [ ': lsp-find-error --previous<ret>'
-map global user ] ': lsp-find-error<ret>'
+map global user w ': w<ret>' -docstring ':w'
+map global user [ ': lsp-find-error --previous<ret>' -docstring "prev error"
+map global user ] ': lsp-find-error<ret>' -docstring "next error"
+map global user k ': lsp-find-error --include-warnings --previous<ret>' -docstring "prev error"
+map global user p ': lsp-find-error --include-warnings<ret>' -docstring "next error"
 
 # Plugins
 source "%val{config}/plugins/plug.kak/rc/plug.kak"
@@ -133,11 +135,11 @@ plug "kak-lsp/kak-lsp" do %{
   }
   set-option global lsp_insert_spaces true
   set-option global lsp_auto_highlight_references true
-  hook global WinSetOption filetype=cpp %{
-    hook window BufWritePre .* lsp-formatting-sync
-  }
+  # hook global WinSetOption filetype=cpp %{
+  #   hook window BufWritePre .* lsp-formatting-sync
+  # }
   set-face global Reference default,default+ub
-  set-face global DiagnosticError Error
+  set-face global DiagnosticError Error+rib
   set-face global DiagnosticWarning rgb:1a1c1d,yellow
   lsp-enable
 }
