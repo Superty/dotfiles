@@ -85,8 +85,21 @@ preexec() {
 	set-title "%# $1"
 }
 
-PROMPT='%{%1F%}%n@%m %{%3F%}%~ %{%B%4F%}%#%{%f%b%} '
-RPROMPT='%0F(↪%?) %*'
+get-gcloud-status() {
+  if [ -f ~/.gcloud-status ]; then
+    stat=$(cat ~/.gcloud-status)
+    if [ "$stat" = "RUNNING" ]; then
+      echo -n " %{%F{yellow}%}gcloud running%{%f%b%}"
+    elif [ "$stat" != "TERMINATED" ]; then
+      echo -n " %{%F{red}%}gcloud status: $stat%{%f%b%}"
+    fi
+  else
+    echo -n " %{%F{red}%}gcloud-status file missing!%{%f%b%}"
+  fi
+}
+
+PROMPT='%{%F{red}%}%n@%m %{%F{yellow}%}%~ %{%B%F{blue}%}%#%{%f%b%} '
+RPROMPT='%0F(↪%?) %*$(get-gcloud-status)%{%f%b%}'
 
 # turn off annoying ctrl+s to stop
 stty -ixon
