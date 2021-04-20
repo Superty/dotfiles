@@ -24,17 +24,17 @@ compinit
 zinit wait lucid light-mode for \
   zdharma/fast-syntax-highlighting
 
-setopt incappendhistory autocd prompt_subst
+setopt incappendhistorytime extendedhistory autocd prompt_subst
 unsetopt nomatch notify
 setopt extended_glob globcomplete
 setopt autocd autopushd pushdignoredups
 autoload -Uz colors && colors
 
 bindkey -e
-# bindkey '^[[1;5C' forward-word
-# bindkey '^[[1;5D' backward-word
-bindkey '^[[1;5C' undefined-key
-bindkey '^[[1;5D' undefined-key
+bindkey '^[[1;5C' forward-word
+bindkey '^[[1;5D' backward-word
+# bindkey '^[[1;5C' undefined-key
+# bindkey '^[[1;5D' undefined-key
 bindkey '^[[A' undefined-key
 bindkey '^[[B' undefined-key
 bindkey '^[[C' undefined-key
@@ -54,8 +54,12 @@ bindkey '^]' forward-char
 # alt-opkl to move up down, back/forward char
 bindkey '^[o' up-line-or-history
 bindkey '^[l' down-line-or-history
+bindkey '^[[1;5A' up-line-or-history
+bindkey '^[[1;5B' down-line-or-history
 bindkey '^[k' backward-char
 bindkey '^[p' forward-char
+bindkey '^[[1;3D' backward-char
+bindkey '^[[1;3C' forward-char
 # ESC has a delay since it's used for chords and we want to use ^[ which is same as esc.
 # Avoid delay when using ^[
 KEYTIMEOUT=1

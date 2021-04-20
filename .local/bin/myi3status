@@ -1,10 +1,10 @@
 #!/bin/sh
-# shell script to prepend i3status with more stuff
 
-i3status | while :
+i3status | sed -u 's/\\\"/\\\\\\\"/g' | while :
 do
-     read line
-     playerctl --player=$PLAYER metadata --format '{{title}} - {{artist}}' > /tmp/now_playing
-     echo $line || exit 1
+     read line;
+     echo "$line"
+     # why can't the above be replaced by head -n 1??
+     playerctl -p spotify metadata --format '{{title}} - {{artist}}' > /tmp/now_playing
 done
 

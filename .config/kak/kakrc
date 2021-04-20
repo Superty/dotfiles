@@ -88,10 +88,12 @@ add-cursor %{
     execute-keys "<a-k>\A.\z<ret>"
     execute-keys -save-regs '' "<a-i>w*"
   } catch %{
-    execute-keys -save-regs '' "*<s-n>"
+    execute-keys -save-regs '' "<a-*><s-n>"
   } catch nop
 }
 # map global insert '<c-d>' '<esc>: select-or-add-cursor<ret>i' -docstring "add cursor on current word, and jump to the next match"
+
+define-command wrap 'addhl buffer/ wrap'
 
 map global normal <esc> <space>
 map global normal <space> ,
@@ -117,6 +119,7 @@ map global user [ ': lsp-find-error --previous<ret>' -docstring "prev error"
 map global user ] ': lsp-find-error<ret>' -docstring "next error"
 map global user k ': lsp-find-error --include-warnings --previous<ret>' -docstring "prev error"
 map global user p ': lsp-find-error --include-warnings<ret>' -docstring "next error"
+map global user l ': lsp-stop<ret>: lsp-start<ret>'
 
 # Plugins
 source "%val{config}/plugins/plug.kak/rc/plug.kak"
@@ -247,9 +250,11 @@ map global normal <a-x> x
 map global normal r R
 map global normal R r
 
-# d doesn't yank, <a-d> does
+# c and d don't yank, <a-c> and <a-d> do
 map global normal d <a-d>
-map global norma <a-d> d
+map global normal <a-d> d
+map global normal c <a-c>
+map global normal <a-c> c
 
 # <a-e> to go to definition
 map global normal <a-e> ': lsp-definition<ret>vv'

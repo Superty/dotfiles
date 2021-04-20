@@ -78,7 +78,7 @@ bar {
     active_workspace    $blue   $base03 $base00
     inactive_workspace  $base00 $base01 $base05
     urgent_workspace    $red    $red    $base00
-    binding_mode        $base00 $yellow $base00    
+    binding_mode        $base00 $yellow $base00
   }
 }
 # dark blue   -- #11556C
@@ -113,7 +113,7 @@ client.background       $base07
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
-bindsym $mod+d exec --no-startup-id i3-dmenu-desktop --dmenu="dmenu -i -nb '$base00' -nf '$base05' -sb '$cyanD' -sf '$base07'"
+bindsym $mod+d exec --no-startup-id j4-dmenu-desktop --dmenu="dmenu -i -nb '$base00' -nf '$base05' -sb '$cyanD' -sf '$base07'"
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -338,6 +338,9 @@ bindsym --release $mod+s exec --no-startup-id maim -s ~/Pictures/Screenshot_$(da
 for_window [class="gnome-terminal-popup"] floating enable
 for_window [instance="Alacritty Popup"] floating enable
 popup_during_fullscreen smart
+
+# autojump to urgent window
+for_window [urgent="latest"] focus
 
 # misc
 default_border pixel 0
